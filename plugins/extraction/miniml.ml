@@ -284,4 +284,25 @@ type 's language_descr = {
   (* for an isolated declaration print *)
   pp_decl : 's -> ml_decl -> Pp.t;
 
+  (* Lexical conventions *)
+  (* turn a Rocq identifier into a valid identifier of the target language,
+     e.g. Scheme replaces the quote ['] by [~] *)
+  unquote : string -> string;
+  (* do type names have to start with an uppercase letter (as in Haskell) *)
+  upper_types : bool;
+
+  (* Name of the native type of characters (resp. strings), if any. When the
+     user extracts the registered ascii (resp. string) type to this name,
+     literals are printed natively. *)
+  char_type : string option;
+  string_type : string option;
+
+  (* Is modular extraction ([Separate Extraction], [Extraction Library])
+     supported? *)
+  modular : bool;
+
+  (* Identifier of the toplevel module of a monolithic extraction to the
+     given file (the argument is the basename of the file, without suffix). *)
+  id_of_filename : string -> Id.t;
+
 }

@@ -69,6 +69,18 @@ sig
 
 end
 
+(** {6 Target languages} *)
+
+(** [register_language l d] makes [d] the description of the extraction
+    language [l]. Plugins providing their own target language register it
+    as [External name], after which [Extraction Language name] selects it. *)
+val register_language : Table.lang -> State.t language_descr -> unit
+
+val is_registered_language : Table.lang -> bool
+
+(** Description of the current extraction language. *)
+val descr : unit -> State.t language_descr
+
 type env = Id.t list * Id.Set.t
 val empty_env : State.t -> unit -> env
 

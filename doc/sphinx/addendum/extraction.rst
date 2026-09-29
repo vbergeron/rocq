@@ -126,12 +126,21 @@ Setting the target language
       | Haskell
       | Scheme
       | JSON
+      | @ident
 
    The ability to fix target language is the first and most important
    of the extraction options. Default is ``OCaml``.
 
    The JSON output is mostly for development or debugging:
    it contains the raw ML term produced as an intermediary target.
+
+   Other target languages can be provided by external plugins, see
+   :ref:`extraction-external-languages`. Such a language is selected
+   by its :n:`@ident` once the plugin providing it has been loaded.
+
+   .. exn:: Unknown extraction language @ident (is the plugin providing it loaded?).
+
+      No plugin registered an extraction language named :n:`@ident`.
 
 
 Inlining and optimizations
@@ -627,6 +636,27 @@ Additional settings
 .. opt:: Extraction Prefix @string
 
    Prefix to use in resulting code, defaults to ``Rocq``.
+
+.. _extraction-external-languages:
+
+Adding target languages from plugins
+------------------------------------
+
+Target languages other than the built-in ones can be provided by OCaml
+plugins depending on ``rocq-runtime.plugins.extraction``. Such a plugin
+builds a ``Common.State.t Miniml.language_descr`` record, which describes
+how to print the extracted ML structures along with the lexical conventions
+of the language (sanitization of identifiers, capitalization of type
+names, native character and string types, support for modular extraction
+and naming of the toplevel module), and registers it under a name with::
+
+  Common.register_language (Table.External "MyLang") mylang_descr
+
+After the plugin is loaded, :n:`Extraction Language MyLang` selects this
+language. Languages provided this way are treated like Scheme and JSON by
+the extraction itself: module structures are flattened, and when modular
+extraction is supported, references to other files are qualified by the
+name of the file as in Haskell.
 
 Differences between Rocq and ML type systems
 ----------------------------------------------
